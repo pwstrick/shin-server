@@ -22,5 +22,4 @@ Object.keys(mysqlServers).forEach((item) => {
 });
 
 global.Sequelize = Sequelize;
-
 export default mysql;
