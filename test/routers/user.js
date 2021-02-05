@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 14:17:34
- * @LastEditTime: 2021-02-03 18:50:01
+ * @LastEditTime: 2021-02-05 16:10:19
  * @LastEditors: strick
  * @Description: 账户的路由层测试
  * @FilePath: /strick/shin-server/test/routers/user.js
@@ -43,4 +43,3 @@ describe('GET /user/list', () => {
     .expect(200, done);
   });
 });
-
