@@ -39,7 +39,7 @@ $ npm start
 &emsp;&emsp;当向这套后端系统服务请求一个接口时，其大致流程如下图所示。
 
 <p align="center">
-  <img src="https://github.com/pwstrick/shin-server/blob/main/docs/assets/shin.png" width="500"/>
+  <img src="https://github.com/pwstrick/shin-server/blob/main/docs/assets/shin.png" width="700"/>
 </p>
 
 # 目录结构
