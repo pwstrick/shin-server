@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 14:06:51
- * @LastEditTime: 2021-02-03 18:47:34
+ * @LastEditTime: 2021-02-05 16:14:49
  * @LastEditors: strick
  * @Description: 脚本测试
  * @FilePath: /strick/shin-server/scripts/demo.js
@@ -13,4 +13,3 @@ async function test() {
   console.log("script test", result);
 }
 test();
-
