@@ -23,9 +23,9 @@ $ npm install
 * mongo 启动命令：mongod
 * redis 启动命令：redis-server
 
-&emsp;&emsp;在 docs/SQL 中有个数据库文件，可初始化所需的表。
+&emsp;&emsp;在 docs/SQL 中有个数据库文件，可初始化所需的表，并且注意将 config/development.js 中数据库的账号和密码修改成本机的。
 
-&emsp;&emsp;执行项目启动命令，成功后的终端如下图所示，端口号默认是 6060。
+&emsp;&emsp;执行项目启动命令，成功后的终端如下图所示，端口号默认是 6060，可在 config/development.js 中自定义端口号。
 ```bash
 $ npm start
 ```
@@ -115,7 +115,7 @@ export default ({ mysql }) =>
 #### 5）routers
 &emsp;&emsp;前端访问的接口，在此目录下声明，此处代码相当于 MVC 中的 Control 层。
 
-&emsp;&emsp;在下面的示例中，完成了一次 GET 请求，middlewares.checkAuth()用于检查权限，ctx.body 会返回响应。
+&emsp;&emsp;在下面的示例中，完成了一次 GET 请求，middlewares.checkAuth()用于检查权限，其值就是在 [authority.js](https://github.com/pwstrick/shin-admin#9authorityjs) 声明的 id，ctx.body 会返回响应。
 ```javascript
 router.get(
   "/tool/short/query",
@@ -166,10 +166,53 @@ $ NODE_ENV=development node scripts/index.js
 ```
 &emsp;&emsp;其中 NODE_ENV 为环境常量，test、pre 和 production。
 
+#### 8）static
+&emsp;&emsp;上传的文件默认会保存在 static/upload 目录中，git 会忽略该文件，不会提交到仓库中。
 
 
 # 开发流程
+1. 首先是在 models 目录中新建对应的表（如果不是新表，该步骤可省略）。
+2. 然后是在 routes 目录中新建或修改某个路由文件。
+3. 最后是在 services 目录中新建或修改某个服务文件。
 
 # 定时任务
+&emsp;&emsp;本地调试全任务可执行  npm run worker
+
+&emsp;&emsp;本地调试单任务可执行下面的命令，其中 ? 代表任务名称，即文件名，不用加后缀。
+```bash
+JOB_TYPES=? npm run worker
+```
+&emsp;&emsp;在 worker 目录中还包含两个目录：cronJobs 和 triggerJobs。
+
+&emsp;&emsp;前者是定时类任务 （指定时间点执行），使用了 [node-schedule](https://github.com/node-schedule/node-schedule) 库。
+```javascript
+module.exports = async () => {
+  //每 30 秒执行一次定时任务
+  schedule.scheduleJob({ rule: "*/30 * * * * *" }, () => {
+    test(result);
+  });
+};
+```
+&emsp;&emsp;后者是触发类任务，在代码中输入指令触发执行，使用 [agenda](https://github.com/agenda/agenda) 库。
+```javascript
+module.exports = (agenda) => {
+  // 例如满足某种条件触发邮件通知
+  agenda.define('send email report', (job, done) => {
+    // 传递进来的数据
+    const data = job.attrs.data;
+    console.log(data);
+    // 触发此任务，需要先引入 agenda.js，然后调用 now() 方法
+    // import agenda from '../worker/agenda';
+    // agenda.now('send email report', {
+    //   username: realName,
+    // });
+  });
+};
+```
+&emsp;&emsp;注意，写好的任务记得添加进入口文件 index-worker.js。
+```javascript
+require('./worker/cronJobs/demo')();
+require('./worker/triggerJobs/demo')(agenda);
+```
 
 # 单元测试
