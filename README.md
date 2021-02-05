@@ -18,8 +18,24 @@ $ npm install
 ```
 
 #### 2）启动
-&emsp;&emsp;启动开发服务器，成功后的终端如下图所示。
+&emsp;&emsp;在启动服务器之前，需要确保本地已经安装并已开启 MongoDB、MySQL 以及 Redis。
+* mongo 启动命令：mongod
+* redis 启动命令：redis-server
+
+&emsp;&emsp;执行项目启动命令，成功后的终端如下图所示。
 ```bash
 $ npm start
 ```
 ![启动](https://github.com/pwstrick/shin-server/blob/main/docs/assets/1.png)
+
+#### 4）运行流程
+&emsp;&emsp;当向这套后端系统服务请求一个接口时，其大致流程如下图所示。
+![shin](https://github.com/pwstrick/shin-server/blob/main/docs/assets/shin.png)
+
+# 目录结构
+
+# 开发流程
+
+# 定时任务
+
+# 单元测试
