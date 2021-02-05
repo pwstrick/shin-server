@@ -170,7 +170,7 @@ $ NODE_ENV=development node scripts/index.js
 &emsp;&emsp;上传的文件默认会保存在 static/upload 目录中，git 会忽略该文件，不会提交到仓库中。
 
 
-# 开发流程
+# 开发步骤
 1. 首先是在 models 目录中新建对应的表（如果不是新表，该步骤可省略）。
 2. 然后是在 routes 目录中新建或修改某个路由文件。
 3. 最后是在 services 目录中新建或修改某个服务文件。
@@ -224,7 +224,7 @@ $ npm test
 ```
 &emsp;&emsp;单元测试使用的框架是 [mocha 3.4](https://mochajs.cn/)，采用的断言是 [chai 4.0](https://www.chaijs.com/api/bdd/)，API测试库是 [supertest 3.0](https://github.com/visionmedia/supertest)。
 ```javascript
-// routers测试
+// routers 测试
 describe('GET /user/list', () => {
   const url = '/user/list';
   it('获取用户列表成功', (done) => {
@@ -235,7 +235,7 @@ describe('GET /user/list', () => {
   });
 });
 
-// serveices测试
+// serveices 测试
 import backendUserRole from '../../services/backendUserRole';
 describe('用户角色', () => {
   it('获取指定id的角色信息', async () => {
