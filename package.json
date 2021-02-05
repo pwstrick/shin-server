@@ -1,0 +1,60 @@
+{
+  "name": "shin-server",
+  "version": "1.0.0",
+  "description": "后台管理系统",
+  "main": "index.js",
+  "scripts": {
+    "start": "NODE_ENV=development nodemon index.js | bunyan",
+    "worker": "NODE_ENV=development nodemon index-worker.js | bunyan",
+    "test": "./node_modules/mocha/bin/mocha | bunyan -l warn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pwstrick/shin-server.git"
+  },
+  "author": "pwstrick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pwstrick/shin-server/issues"
+  },
+  "homepage": "https://github.com/pwstrick/shin-server#readme",
+  "dependencies": {
+    "agenda": "^2.0.2",
+    "axios": "^0.16.2",
+    "babel-core": "^6.24.1",
+    "babel-polyfill": "^6.23.0",
+    "bunyan": "^1.8.12",
+    "config": "^1.30.0",
+    "es6-requireindex": "^0.3.10",
+    "ioredis": "^4.2.0",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.2.0",
+    "koa-bunyan-logger": "^2.1.0",
+    "koa-compress": "^2.0.0",
+    "koa-jwt": "^3.2.2",
+    "koa-logger": "^3.0.0",
+    "koa-multer": "^1.0.2",
+    "koa-router": "7.1.1",
+    "koa-static": "^4.0.1",
+    "koa-validate": "^1.0.7",
+    "koa2-formidable": "^1.0.2",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "mongodb": "^2.2.27",
+    "mongoose": "^5.4.17",
+    "mysql": "^2.13.0",
+    "node-schedule": "^1.3.2",
+    "redis": "^2.7.1",
+    "redis-clustr": "^1.6.0",
+    "sequelize": "^3.30.4"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "mocha": "^3.4.2",
+    "chai": "^4.0.0",
+    "supertest": "^3.0.0",
+    "nodemon": "^1.17.5"
+  }
+}

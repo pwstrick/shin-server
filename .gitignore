@@ -1,0 +1,18 @@
+# Mac OS 排序文件
+.DS_Store
+
+# vscode 配置目录
+.vscode
+
+# dependencies
+/node_modules
+/package-lock.json
+
+
+# 本地的配置文件
+# config/development.js
+
+# 生成的目录
+dist/
+upload/
+static/upload/
