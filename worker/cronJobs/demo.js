@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 14:35:06
- * @LastEditTime: 2021-02-03 14:59:07
+ * @LastEditTime: 2021-02-05 16:13:43
  * @LastEditors: strick
  * @Description: 定时任务的demo
  * @FilePath: /strick/shin-server/worker/cronJobs/demo.js
