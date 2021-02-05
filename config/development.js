@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-02 16:17:36
- * @LastEditTime: 2021-02-03 09:59:29
+ * @LastEditTime: 2021-02-05 16:04:36
  * @LastEditors: strick
  * @Description: 本地配置文件
  * @FilePath: /strick/shin-server/config/development.js
@@ -9,7 +9,6 @@
 module.exports = {
     port: 6060,
     jwtSecret: 'abcd',
-
     /**
      * 数据库相关配置
      */
