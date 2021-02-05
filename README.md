@@ -6,6 +6,20 @@
 * 已开辟脚本和定时任务目录，可将相应文件补充进来。
 * 容易扩展，可引入第三方库，例如队列、云服务等。
 
-&emsp;&emsp;与[shin-admin](https://github.com/pwstrick/shin-admin)配合使用后，大致架构如下图。
+&emsp;&emsp;与[shin-admin](https://github.com/pwstrick/shin-admin)配合使用的话，大致架构如下图。
 
 ![架构](https://github.com/pwstrick/shin-server/blob/main/docs/assets/architecture.png)
+
+# 准备工作
+#### 1）安装
+&emsp;&emsp;在将项目下载下来后，来到其根目录，运行安装命令，自动将依赖包下载到本地。
+```bash
+$ npm install
+```
+
+#### 2）启动
+&emsp;&emsp;启动开发服务器，成功后的终端如下图所示。
+```bash
+$ npm start
+```
+![启动](https://github.com/pwstrick/shin-server/blob/main/docs/assets/1.png)
