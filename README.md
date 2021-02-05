@@ -176,11 +176,13 @@ $ NODE_ENV=development node scripts/index.js
 3. 最后是在 services 目录中新建或修改某个服务文件。
 
 # 定时任务
-&emsp;&emsp;本地调试全任务可执行  npm run worker
-
+&emsp;&emsp;本地调试全任务可执行：
+```bash
+$ npm run worker
+```
 &emsp;&emsp;本地调试单任务可执行下面的命令，其中 ? 代表任务名称，即文件名，不用加后缀。
 ```bash
-JOB_TYPES=? npm run worker
+$ JOB_TYPES=? npm run worker
 ```
 &emsp;&emsp;在 worker 目录中还包含两个目录：cronJobs 和 triggerJobs。
 
@@ -216,3 +218,31 @@ require('./worker/triggerJobs/demo')(agenda);
 ```
 
 # 单元测试
+&emsp;&emsp;运行下面的命令就会执行单元测试。
+```bash
+$ npm test
+```
+&emsp;&emsp;单元测试使用的框架是 [mocha 3.4](https://mochajs.cn/)，采用的断言是 [chai 4.0](https://www.chaijs.com/api/bdd/)，API测试库是 [supertest 3.0](https://github.com/visionmedia/supertest)。
+```javascript
+// routers测试
+describe('GET /user/list', () => {
+  const url = '/user/list';
+  it('获取用户列表成功', (done) => {
+    api
+    .get(url)
+    .set('Authorization', authToken)
+    .expect(200, done);
+  });
+});
+
+// serveices测试
+import backendUserRole from '../../services/backendUserRole';
+describe('用户角色', () => {
+  it('获取指定id的角色信息', async () => {
+    const service = new backendUserRole(models);
+    const res = await service.getInfoById('584a4dc24c886205bd771afe');
+    // expect(2).toBe(2);
+    // expect(res.rolePermisson).to.be.an('array');
+  });
+});
+```
