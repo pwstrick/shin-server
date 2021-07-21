@@ -178,6 +178,18 @@ $ NODE_ENV=development node scripts/index.js
 2. 然后是在 routes 目录中新建或修改某个路由文件。
 3. 最后是在 services 目录中新建或修改某个服务文件。
 
+&emsp;&emsp;在项目研发的过程中，发现很多操作都是对数据库做简单地增删改查，有时候就需要在上述三个目录中各自新建一个文件。
+
+&emsp;&emsp;这么操作费时费力，到后期会发现有很多这样的接口，在维护上也会增加挑战，因此抽象了一套通用接口，保存在 routes/common.js 中。
+
+* get：读取一条数据（单表查询）
+* gets：读取多条数据（单表查询）
+* head：读取聚合数据，例如count()、sum()、max() 和 min()
+* post：提交数据，用于增加记录
+* put：更新数据
+
+&emsp;&emsp;所有的接口采用 post 的请求方式，数据库表都是单表查询，不支持联表，若要联表则单独创建接口。
+
 # 定时任务
 &emsp;&emsp;本地调试全任务可执行：
 ```bash
@@ -225,7 +237,7 @@ require('./worker/triggerJobs/demo')(agenda);
 ```bash
 $ npm test
 ```
-&emsp;&emsp;单元测试使用的框架是 [mocha 3.4](https://mochajs.cn/)，采用的断言是 [chai 4.0](https://www.chaijs.com/api/bdd/)，API测试库是 [supertest 3.0](https://github.com/visionmedia/supertest)。
+&emsp;&emsp;单元测试使用的框架是 [mocha 3.4](https://mochajs.cn/)，采用的断言是 [chai 4.0](https://www.chaijs.com/api/bdd/)，API测试库是 [supertest 3.0](https://github.com/visionmedia/supertest)，测试替代库 [sion.js](https://sinonjs.org)
 ```javascript
 // routers 测试
 describe('GET /user/list', () => {

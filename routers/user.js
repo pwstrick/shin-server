@@ -286,19 +286,19 @@ export default (router, services, middlewares) => {
         await redis.aws.set(`backend:user:account:authorities:${res._id}`, authorities.toString());
         
         // 密码过期时间通知
-        const passwordExpireTime = res.passwordExpireTime;
         let expireDays = 90;
-        if (passwordExpireTime) {
-          if (moment().isBefore(moment(passwordExpireTime), 'd')) {
-            const days = moment(passwordExpireTime).diff(moment(), 'd');
-            expireDays = days > 0 ? days : 0;
-          } else {
-            ctx.body = { code: 400, msg: '密码过期' };
-            return;
-          }
-        } else {
-          await services.backendUserAccount.updateInfo(res._id, { passwordExpireTime: moment().add(90, 'd').endOf('d') });
-        }
+        // const passwordExpireTime = res.passwordExpireTime;
+        // if (passwordExpireTime) {
+        //   if (moment().isBefore(moment(passwordExpireTime), 'd')) {
+        //     const days = moment(passwordExpireTime).diff(moment(), 'd');
+        //     expireDays = days > 0 ? days : 0;
+        //   } else {
+        //     ctx.body = { code: 400, msg: '密码过期' };
+        //     return;
+        //   }
+        // } else {
+        //   await services.backendUserAccount.updateInfo(res._id, { passwordExpireTime: moment().add(90, 'd').endOf('d') });
+        // }
         ctx.body = { code:0, token, authorities, nodeEnv, expireDays };
       } else {
         ctx.body = { code: 400, msg: '密码错误' };
