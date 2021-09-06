@@ -1,3 +1,11 @@
+/*
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2021-02-02 16:35:59
+ * @LastEditTime: 2021-09-06 13:24:58
+ * @Description: 
+ * @FilePath: /strick/shin-server/utils/index.js
+ */
 import moment from 'moment';
 
 /**
@@ -87,4 +95,11 @@ export function string62to10(s) {
       result += p * Math.pow(digits.length, s.length - i - 1);
     }
     return result;
+}
+
+/**
+ * 定时任务的日志格式
+ */
+ export function setCronFormat({name, result='success', startTimestamp}) {
+  logger.info(`[${moment().format('YYYY-MM-DD HH:mm:ss')}] 任务[${name}] 执行结果[${result}] 执行时长[${Date.now() - startTimestamp}ms]`);
 }

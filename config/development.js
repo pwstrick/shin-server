@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-02 16:17:36
- * @LastEditTime: 2021-02-05 16:04:36
+ * @LastEditTime: 2021-09-06 13:46:25
  * @LastEditors: strick
  * @Description: 本地配置文件
  * @FilePath: /strick/shin-server/config/development.js
@@ -9,6 +9,12 @@
 module.exports = {
     port: 6060,
     jwtSecret: 'abcd',
+    /**
+     * api服务域名配置
+     */
+    services: {
+      adminApi: 'http://localhost:8000/api',
+    },
     /**
      * 数据库相关配置
      */
@@ -25,6 +31,13 @@ module.exports = {
         host: '127.0.0.1',
         port: 6379,
       },
+    },
+    // JS 映射文件地址
+    sourceMapPath: '../../smap',
+    // 任务队列缓存
+    kueRedis: {
+      host: '127.0.0.1',
+      port: 6379,
     },
     mysql: {
       backend: {

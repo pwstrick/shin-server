@@ -1,14 +1,19 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2021-07-21 15:50:51
+ * @LastEditTime: 2021-09-06 13:51:43
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
  */
 import _ from "lodash";
+import config from 'config';
 const fs = require('fs');
 const path = require('path');
+import crypto from 'crypto';
+import moment from 'moment';
+import queue from '../utils/queue';
+import { MONITOR_PROJECT } from '../utils/constant';
 export default (router, services, middlewares) => {
   /**
    * 上传逻辑
@@ -213,5 +218,182 @@ export default (router, services, middlewares) => {
     }
     const affected = await services.common.update(tableName, set, where);
     ctx.body = { code: (affected > 0 ? 0 : 1) };
+  });
+
+  /**
+   * 监控信息搜集
+   */
+   router.get('/ma.gif', async (ctx) => {
+    const { m } = ctx.query;
+    const params = JSON.parse(m);
+    let { subdir = '', token, category, data, identity } = params;
+    let { type, status, url } = data;
+    const projectSubdir = subdir;   // 子目录 提前缓存
+    // 对 Promise 的错误做特殊处理
+    if (type === 'promise') {
+      status = data.desc.status;
+      url = data.desc.url;
+    }
+    const message = JSON.stringify(data);
+    // MD5加密
+    const key = crypto.createHash('md5').update(token + category + message).digest('hex');
+    // 读取当前最新的 Source Map 文件
+    let source = '';
+    const dir = `${process.env.NODE_ENV}-${token}`;   // 存放 map 文件的目录
+    const absDir = path.resolve(__dirname, config.get('sourceMapPath'), dir);
+    logger.trace('sourceMapPath', absDir);
+    // 目录存在，并且当前是错误类型的日志
+    if (fs.existsSync(absDir) && category === 'error') {
+      let readDir = fs.readdirSync(absDir);
+      // 如果是 chunk-vendors 的错误，需做特殊处理
+      if (type == 'runtime' && data.desc.indexOf('chunk-vendors') >= 0) {
+        subdir = 'chunk-vendors';
+        readDir = readDir.filter(name => name.split('.')[0] === subdir);
+        subdir += '.';
+      } else if (subdir) {   // 当传递的subdir非空时，需要过滤进行过滤
+        // map 文件第一个点号之前的前缀必须与 subdir 相同
+        readDir = readDir.filter(name => name.split('.')[0] === subdir);
+        subdir += '.';    // 用于后续的去除前缀
+      }
+      readDir = readDir.sort((a, b) => b.replace(subdir, '').split('.')[0] - a.replace(subdir, '').split('.')[0]);
+      source = readDir.length > 0 ? readDir[0] : '';
+    }
+
+    // UA信息解析
+    // const ua = JSON.stringify(uaParser(ctx.headers['user-agent']));
+    const ua = ctx.headers['user-agent'];
+    // 只提取路径信息，去除协议、域名和端口
+    const urlPath = url ? url.split("?")[0].replace(/(\w*):?\/\/([^/:]+)(:\d*)?/, "").substring(1).trim() : null;
+    const monitor = {
+      project: token,
+      project_subdir: projectSubdir,
+      category,
+      message,
+      key,
+      ua,
+      source,
+      identity,
+      message_type: type && type.toLowerCase(),
+      message_status: status,
+      message_path: urlPath,
+      day: moment().format('YYYYMMDD'),
+      hour: moment().format('HH'),
+      minute: moment().format('mm'),
+      ctime: new Date(),   // 当前日期
+    };
+    const taskName = 'handleMonitor';// + Math.ceil(randomNum(0, 10) / 3);
+    // 新增队列任务 生存时间60秒
+    const job = queue.create(taskName, { monitor }).ttl(60000)
+      .removeOnComplete(true);
+    // job.on('failed', function(errorMessage){
+    //   logger.trace(`${taskName} job faild`, errorMessage);
+    // });
+    job.save((err) => {
+      if (err) {
+        logger.trace(`${taskName} job failed!`);
+      }
+      logger.trace(`${taskName} job saved!`, job.id);
+    });
+
+    // queue.on('error', function( err ) {
+    //   logger.trace('handleMonitor queue error', err);
+    // });
+
+    const blankUrl = path.resolve(__dirname, '../public/blank.gif');
+    ctx.body = fs.readFileSync(blankUrl);    // 空白gif图
+  });
+
+  /**
+   * 性能信息搜集
+   */
+  router.post('/pe.gif', async (ctx) => {
+    logger.info(ctx.request.body);    // 打印请求参数
+    let params;
+    try {
+      params = JSON.parse(ctx.request.body);
+    } catch (e) {
+      params = null;
+    }
+    if (!params) {
+      ctx.body = {};
+      return;
+    }
+    // UA信息解析
+    // const ua = JSON.stringify(uaParser(ctx.headers['user-agent']));
+    const ua = ctx.headers['user-agent'];
+    const performance = {
+      project: params.pkey,
+      load: params.loadTime,
+      ready: params.domReadyTime,
+      paint: params.firstPaint,
+      screen: params.firstScreen,
+      identity: params.identity,
+      ua,
+      day: moment().format('YYYYMMDD'),
+      hour: moment().format('HH'),
+      minute: moment().format('mm'),
+      referer: params.referer,   // 来源地址
+      timing: params.timing ? JSON.stringify(params.timing) : null,
+    };
+    delete params.pkey;
+    delete params.loadTime;
+    delete params.domReadyTime;
+    delete params.firstPaint;
+    delete params.firstScreen;
+    delete params.identity;
+    delete params.referer;
+    delete params.timing;
+    performance.measure = JSON.stringify(params);
+    // 新增队列任务 生存时间60秒
+    const job = queue.create('handlePerformance', { performance }).ttl(60000)
+      .removeOnComplete(true).save((err) => {
+        if (err) {
+          logger.trace('handlePerformance job failed!');
+        }
+        logger.trace('handlePerformance job saved!', job.id);
+      });
+    job.on('failed', (errorMessage) => {
+      console.log('handlePerformance job faild', errorMessage);
+    });
+    // queue.on('error', function( err ) {
+    //   console.log('handlePerformance queue error', err);
+    // });
+
+    // console.log(performance);
+    // await services.common.createPerformance();
+    ctx.body = {};
+  });
+
+  /**
+   * 删除过期的 Source Map 日志文件
+   */
+  router.get('/smap/del', async (ctx) => {
+    const { day = 21 } = ctx.query;
+    // 删除21天前的文件
+    const threeWeek = ~~moment().add(-day, 'days').startOf('day').format('YYYYMMDDHHmm');
+    // 删除文件 需要调用web-api的接口
+    const mapPath = path.resolve(__dirname, config.get('sourceMapPath'));
+    logger.info(`source map目录：${mapPath}`);
+    if (!fs.existsSync(mapPath)) {
+      logger.info('source map目录不存在');
+    }
+    // 遍历项目
+    MONITOR_PROJECT.forEach((dir) => {
+      // 指定目录
+      const currentDir = path.resolve(mapPath, `${process.env.NODE_ENV}-${dir}`);
+      if (!fs.existsSync(currentDir)) {
+        return;
+      }
+      const readDir = fs.readdirSync(currentDir);
+      readDir.forEach((name) => {
+        const num = ~~name.replace(/[^0-9]/ig, '');
+        // 删除过期文件
+        if (num <= threeWeek) {
+          const filePath = path.resolve(currentDir, name);
+          fs.unlinkSync(filePath);
+        }
+      });
+    });
+    ctx.body = {};
   });
 }
