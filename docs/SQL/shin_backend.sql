@@ -81,6 +81,7 @@ CREATE TABLE `web_performance` (
   `ua` varchar(600) COLLATE utf8mb4_bin NOT NULL COMMENT '代理信息',
   `referer` varchar(200) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '来源地址',
   `timing` text COLLATE utf8mb4_bin COMMENT '浏览器读取到的性能参数，用于排查',
+  `resource` text COLLATE utf8mb4_bin COMMENT '静态资源信息',
   PRIMARY KEY (`id`),
   KEY `idx_project_day` (`project`,`day`),
   KEY `idx_project_day_hour` (`project`,`day`,`hour`)
@@ -101,7 +102,7 @@ DROP TABLE IF EXISTS `web_performance_statis`;
 CREATE TABLE `web_performance_statis` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `date` int(11) NOT NULL COMMENT '日期，格式为20210318',
-  `statis` text COLLATE utf8mb4_bin NOT NULL COMMENT '以JSON格式保存的统计信息',
+  `statis` mediumtext COLLATE utf8mb4_bin NOT NULL COMMENT '以JSON格式保存的统计信息',
   `project` varchar(20) COLLATE utf8mb4_bin NOT NULL COMMENT '项目关键字，关联 web_performance_project 表中的key',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='性能监控统计';

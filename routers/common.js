@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2021-09-06 13:51:43
+ * @LastEditTime: 2022-07-12 16:30:43
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
@@ -334,6 +334,7 @@ export default (router, services, middlewares) => {
       minute: moment().format('mm'),
       referer: params.referer,   // 来源地址
       timing: params.timing ? JSON.stringify(params.timing) : null,
+      resource: params.resource ? JSON.stringify(params.resource) : null,
     };
     delete params.pkey;
     delete params.loadTime;
@@ -343,6 +344,7 @@ export default (router, services, middlewares) => {
     delete params.identity;
     delete params.referer;
     delete params.timing;
+    delete params.resource;
     performance.measure = JSON.stringify(params);
     // 新增队列任务 生存时间60秒
     const job = queue.create('handlePerformance', { performance }).ttl(60000)

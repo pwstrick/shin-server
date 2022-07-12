@@ -293,6 +293,15 @@ class WebMonitor {
     return count ? count : 0;
   }
   /**
+   * 获取一条性能数据
+   */
+  async getOnePerformance(where) {
+    return this.models.WebPerformance.findOne({
+      where,
+      raw: true,
+    });
+  }
+  /**
    * 获取一条排序处在95%位置的性能数据
    */
   async getOneOrderPerformance(where, order, offset) {

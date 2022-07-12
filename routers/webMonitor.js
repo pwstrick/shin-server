@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-25 15:40:31
- * @LastEditTime: 2021-09-06 13:20:59
+ * @LastEditTime: 2022-07-12 16:32:05
  * @LastEditors: strick
  * @Description:
  * @FilePath: /strick/shin-server/routers/webMonitor.js
@@ -741,6 +741,21 @@ router.get(
         statistic.push(current);
         ctx.body = { code: 0, data: statistic};
       }
+    );
+    /**
+     * 读取一条性能日志
+     */
+    router.get(
+      '/monitor/performance/get',
+      middlewares.checkAuth('backend.monitor.performance.dashboard'),
+      async (ctx) => {
+        const {
+          id,
+        } = ctx.query;
+        // 结束时间是今天，就计算今天的统计信息
+        const row = await services.webMonitor.getOnePerformance({ id });
+        ctx.body = { code: 0, data: row };
+      },
     );
     /**
      * 飞书告警 demo演示

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2021-03-23 11:48:52
- * @LastEditTime: 2021-09-06 12:19:12
+ * @LastEditTime: 2022-07-12 16:29:05
  * @Description: 性能监控日志
  * @FilePath: /strick/shin-server/models/WebPerformance.js
  */
@@ -71,6 +71,10 @@ module.exports = ({ mysql }) =>
       timing: {
         type: Sequelize.TEXT,
         field: "timing"
+      },
+      resource: {
+        type: Sequelize.TEXT,
+        field: "resource"
       }
     },
     {
