@@ -757,6 +757,28 @@ router.get(
         ctx.body = { code: 0, data: row };
       },
     );
+  /**
+   * 读取性能时序
+   */
+  router.get(
+    '/monitor/performance/flow',
+    middlewares.checkAuth('backend.monitor.performance.dashboard'),
+    async (ctx) => {
+      const {
+        id,
+        type,
+        range,
+        curPage = 1,
+        pageSize = 10,
+        start,
+        end,
+      } = ctx.query;
+      const { count, rows } = await services.webMonitor.getPerformanceFlow({
+        id, type, range, curPage, pageSize, start, end,
+      });
+      ctx.body = { code: 0, data: rows, count };
+    },
+  );
     /**
      * 飞书告警 demo演示
      */

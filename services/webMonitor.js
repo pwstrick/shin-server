@@ -302,6 +302,55 @@ class WebMonitor {
     });
   }
   /**
+   * 获取一条性能数据
+   */
+  async getPerformanceFlow({
+    id, type, range, curPage, pageSize, start, end,
+  }) {
+    const where = {};
+    const types = {
+      1: 'paint',
+      2: 'screen',
+    };
+    const ranges = {
+      1: {
+        $lte: 1000,
+      },
+      2: {
+        $gt: 1000,
+        $lte: 2000,
+      },
+      3: {
+        $gt: 2000,
+        $lte: 3000,
+      },
+      4: {
+        $gt: 3000,
+        $lte: 4000,
+      },
+      5: {
+        $gt: 4000,
+      },
+    };
+    if (id) where.id = id;
+    if (type && range) {
+      where[types[type]] = ranges[range];
+    }
+    if (start && end) {
+      where.ctime = {
+        $gte: start,
+        $lte: end,
+      };
+    }
+    return this.models.WebPerformance.findAndCountAll({
+      where,
+      raw: true,
+      order: 'ctime DESC',
+      limit: parseInt(pageSize),
+      offset: (curPage - 1) * pageSize,
+    });
+  }
+  /**
    * 获取一条排序处在95%位置的性能数据
    */
   async getOneOrderPerformance(where, order, offset) {

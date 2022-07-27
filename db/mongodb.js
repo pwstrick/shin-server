@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import config from 'config';
-import bunyan from 'bunyan';
+// import bunyan from 'bunyan';
 import Promise from 'bluebird';
 
-const logger = bunyan.createLogger({ name: 'Mongodb', level: 'debug' });
+// const logger = bunyan.createLogger({ name: 'Mongodb', level: 'debug' });
 mongoose.set('debug', (...args) => {
   if (args[0] !== 'agendaJobs') {
     logger.debug(...args);

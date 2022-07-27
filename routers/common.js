@@ -263,7 +263,7 @@ export default (router, services, middlewares) => {
     // const ua = JSON.stringify(uaParser(ctx.headers['user-agent']));
     const ua = ctx.headers['user-agent'];
     // 只提取路径信息，去除协议、域名和端口
-    const urlPath = url ? url.split("?")[0].replace(/(\w*):?\/\/([^/:]+)(:\d*)?/, "").substring(1).trim() : null;
+    const urlPath = url ? url.split("?")[0].replace(/(\w*):?\/{2,4}([^/:]+)(:\d*)?/, "").substring(1).trim() : null;
     const monitor = {
       project: token,
       project_subdir: projectSubdir,
@@ -307,7 +307,6 @@ export default (router, services, middlewares) => {
    * 性能信息搜集
    */
   router.post('/pe.gif', async (ctx) => {
-    logger.info(ctx.request.body);    // 打印请求参数
     let params;
     try {
       params = JSON.parse(ctx.request.body);
@@ -332,7 +331,7 @@ export default (router, services, middlewares) => {
       day: moment().format('YYYYMMDD'),
       hour: moment().format('HH'),
       minute: moment().format('mm'),
-      referer: params.referer,   // 来源地址
+      referer: params.referer, // 来源地址
       timing: params.timing ? JSON.stringify(params.timing) : null,
       resource: params.resource ? JSON.stringify(params.resource) : null,
     };
@@ -355,13 +354,13 @@ export default (router, services, middlewares) => {
         logger.trace('handlePerformance job saved!', job.id);
       });
     job.on('failed', (errorMessage) => {
-      console.log('handlePerformance job faild', errorMessage);
+      logger.trace('handlePerformance job faild', errorMessage);
     });
     // queue.on('error', function( err ) {
-    //   console.log('handlePerformance queue error', err);
+    //   // console.log('handlePerformance queue error', err);
     // });
 
-    // console.log(performance);
+    // // console.log(performance);
     // await services.common.createPerformance();
     ctx.body = {};
   });

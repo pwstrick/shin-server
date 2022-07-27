@@ -12,70 +12,70 @@ module.exports = ({ mysql }) =>
     {
       id: {
         type: Sequelize.BIGINT,
-        field: "id",
+        field: 'id',
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       load: {
         type: Sequelize.INTEGER,
-        field: "load"
+        field: 'load',
       },
       ready: {
         type: Sequelize.INTEGER,
-        field: "ready"
+        field: 'ready',
       },
       paint: {
         type: Sequelize.INTEGER,
-        field: "paint"
+        field: 'paint',
       },
       screen: {
         type: Sequelize.INTEGER,
-        field: "screen"
+        field: 'screen',
       },
       ua: {
         type: Sequelize.STRING(600),
-        field: "ua"
+        field: 'ua',
       },
       measure: {
         type: Sequelize.STRING(1000),
-        field: "measure"
+        field: 'measure',
       },
       day: {
         type: Sequelize.INTEGER,
-        field: "day"
+        field: 'day',
       },
       hour: {
         type: Sequelize.INTEGER,
-        field: "hour"
+        field: 'hour',
       },
       minute: {
         type: Sequelize.INTEGER,
-        field: "minute"
+        field: 'minute',
       },
       project: {
         type: Sequelize.STRING,
-        field: "project"
+        field: 'project',
       },
       ctime: {
         type: Sequelize.DATE,
-        field: "ctime"
+        field: 'ctime',
       },
       identity: {
         type: Sequelize.STRING,
-        field: "identity"
+        field: 'identity',
       },
       referer: {
         type: Sequelize.STRING,
-        field: "referer"
+        field: 'referer',
       },
       timing: {
         type: Sequelize.TEXT,
-        field: "timing"
+        field: 'timing',
       },
       resource: {
         type: Sequelize.TEXT,
-        field: "resource"
-      }
+        field: 'resource',
+      },
     },
     {
       tableName: "web_performance",

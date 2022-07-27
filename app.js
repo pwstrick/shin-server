@@ -23,10 +23,17 @@ import init from './init';
 const app = new Koa();
 const router = new KoaRouter();
 
-global.logger = bunyan.createLogger({
+global.logger2 = bunyan.createLogger({
   name: 'shin-server',
   level: 'trace',
 });
+global.logger = {
+  debug: () => {},
+  warn: () => {},
+  error: () => {},
+  info: () => {},
+  trace: () => {},
+};
 app.use(koaBunyanLogger());
 app.use(koaBunyanLogger.requestIdContext());
 app.use(KoaCompress());

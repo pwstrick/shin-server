@@ -1,10 +1,10 @@
 import Sequelize from 'sequelize';
 import config from 'config';
-import bunyan from 'bunyan';
+// import bunyan from 'bunyan';
 
 const mysql = {};
 const mysqlServers = config.get('mysql');
-const logger = bunyan.createLogger({ name: 'Mysql', level: 'debug' });
+// const logger = bunyan.createLogger({ name: 'Mysql', level: 'debug' });
 const create = (params) => {
   const { database, username, password, options } = params;
   return new Sequelize(database, username, password, {
