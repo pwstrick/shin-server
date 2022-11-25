@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2021-02-25 15:32:43
- * @LastEditTime: 2021-09-06 13:46:35
+ * @LastEditTime: 2022-11-25 15:30:58
  * @Description: 前端监控
  * @FilePath: /strick/shin-server/services/webMonitor.js
  */
@@ -250,13 +250,33 @@ class WebMonitor {
   /**
    * 获取正常的性能监控项目
    */
-  async getPerformanceProjectList() {
-    return this.models.WebPerformanceProject.findAll({
-      where: {
-        status: 1
-      },
-      raw: true
+   async getPerformanceProjectList({ name, curPage, pageSize }) {
+    const where = {
+      status: 1,
+    };
+    if(name) {
+      where.name = {
+        $like: `%${name}%`
+      }
+    }
+    return this.models.WebPerformanceProject.findAndCountAll({
+      where,
+      raw: true,
+      order: 'ctime DESC',
+      limit: parseInt(pageSize),
+      offset: (curPage - 1) * pageSize,
     });
+  }
+  /**
+   * 更新性能监控项目
+   */
+  async updatePerformanceProject(id, data) {
+    return this.models.WebPerformanceProject.update(
+      data,
+      {
+        where: { id },
+      }
+    );
   }
   /**
    * 删除性能监控项目

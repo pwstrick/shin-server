@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-25 15:40:31
- * @LastEditTime: 2022-07-12 16:32:05
+ * @LastEditTime: 2022-11-25 15:28:11
  * @LastEditors: strick
  * @Description:
  * @FilePath: /strick/shin-server/routers/webMonitor.js
@@ -12,9 +12,8 @@ import path from 'path';
 import crypto from "crypto";
 const sourceMap = require("source-map");
 const fs = require("fs");
-const https = require("https");
-const http = require("http");
 import { PERFORMANCT_RATE } from "../utils/constant";
+import { formatDate } from '../utils/tools';
 import uaParser from "ua-parser-js";
 export default (router, services, middlewares) => {
   /**
@@ -462,16 +461,32 @@ router.get(
     "/monitor/performance/project/create",
     middlewares.checkAuth("backend.monitor.performance.project"),
     async (ctx) => {
-      const { name } = ctx.request.body;
-      //MD5加密 取前面的16位
-      const key = crypto.createHash("md5").update(name).digest("hex").substr(0, 16);
-      const keyData = await services.webMonitor.getOnePerformanceProject({ key });
-      //当根据key可以找到数据，则报错
-      if (keyData) {
-        ctx.body = { code: 1, msg: "项目已存在" };
+      const { name, id } = ctx.request.body;
+      if(id) {
+        const exist = await services.webMonitor.getOnePerformanceProject({ 
+          name,
+          id: {
+            $not: id
+          }
+        });
+        if(exist) {
+          ctx.body = { code: 1, msg: '项目已存在' };
+          return;
+        }
+        // 更新操作
+        await services.webMonitor.updatePerformanceProject(id, { name });
+        ctx.body = { code: 0 };
         return;
       }
-      //创建
+      // MD5加密 取前面的16位
+      const key = crypto.createHash('md5').update(name).digest('hex').substring(0, 16);
+      const keyData = await services.webMonitor.getOnePerformanceProject({ key });
+      // 当根据key可以找到数据，则报错
+      if (keyData) {
+        ctx.body = { code: 1, msg: '项目已存在' };
+        return;
+      }
+      // 创建
       await services.webMonitor.createPerformanceProject({ name, key });
       ctx.body = { code: 0 };
     }
@@ -484,8 +499,16 @@ router.get(
       "/monitor/performance/project/list",
       middlewares.checkAuth("backend.monitor.performance.project"),
       async (ctx) => {
-        const rows = await services.webMonitor.getPerformanceProjectList();
-        ctx.body = { code: 0, data: rows };
+        const { curPage = 1, pageSize = 10, name } = ctx.query;
+        const { count, rows } = await services.webMonitor.getPerformanceProjectList({ name, curPage, pageSize});
+        ctx.body = {
+          code: 0,
+          data: rows.map((item) => {
+            item.ctime = formatDate(item.ctime);
+            return item;
+          }),
+          count
+        };
       }
     );
   
