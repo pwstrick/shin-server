@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2022-07-12 16:30:43
+ * @LastEditTime: 2022-12-16 15:52:26
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
@@ -232,6 +232,9 @@ export default (router, services, middlewares) => {
     // 对 Promise 的错误做特殊处理
     if (type === 'promise') {
       status = data.desc.status;
+      url = data.desc.url;
+    } else if (data.desc && data.desc.url) {
+      // React Vue Runtime Crash Image 等错误也要提取 url
       url = data.desc.url;
     }
     const message = JSON.stringify(data);
