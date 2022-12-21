@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-02 16:13:00
- * @LastEditTime: 2021-09-06 13:45:34
+ * @LastEditTime: 2022-12-21 17:40:52
  * @LastEditors: strick
  * @Description: 启动文件
  * @FilePath: /strick/shin-server/app.js
@@ -37,7 +37,7 @@ global.logger = {
 app.use(koaBunyanLogger());
 app.use(koaBunyanLogger.requestIdContext());
 app.use(KoaCompress());
-app.use(KoaBodyParser({ jsonLimit: '10mb', enableTypes: ['json', 'form', 'text'] }));
+app.use(KoaBodyParser({ jsonLimit: '10mb', textLimit: '10mb', enableTypes: ['json', 'form', 'text'] }));
 app.use(KoaStatic('static'));
 app.use(KoaStatic('upload'));
 app.use(jwt({

@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2021-02-25 15:32:43
- * @LastEditTime: 2022-11-25 15:30:58
+ * @LastEditTime: 2022-12-21 17:36:14
  * @Description: 前端监控
  * @FilePath: /strick/shin-server/services/webMonitor.js
  */
@@ -498,7 +498,13 @@ class WebMonitor {
     // 存在
     if(exist) 
       return this.updateMonitorDigit(exist.digit+1, exist.id);   //更新出现次数
-    return this.createMonitor(monitor);      //创建记录
+    let row = await this.createMonitor(monitor);      //创建记录
+    row = row.toJSON();
+    // 添加行为记录
+    if (monitor.record) {
+      await this.models.WebMonitorRecord.create({ monitor_id: row.id, record: monitor.record });
+    }
+    return row;
   }
 
   /**

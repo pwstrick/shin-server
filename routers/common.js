@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2022-12-16 15:52:26
+ * @LastEditTime: 2022-12-21 17:27:37
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
@@ -223,8 +223,8 @@ export default (router, services, middlewares) => {
   /**
    * 监控信息搜集
    */
-   router.get('/ma.gif', async (ctx) => {
-    const { m } = ctx.query;
+   router.post('/ma.gif', async (ctx) => {
+    const { m, r } = JSON.parse(ctx.request.body);
     const params = JSON.parse(m);
     let { subdir = '', token, category, data, identity } = params;
     let { type, status, url } = data;
@@ -249,7 +249,7 @@ export default (router, services, middlewares) => {
     if (fs.existsSync(absDir) && category === 'error') {
       let readDir = fs.readdirSync(absDir);
       // 如果是 chunk-vendors 的错误，需做特殊处理
-      if (type == 'runtime' && data.desc.indexOf('chunk-vendors') >= 0) {
+      if (type == 'runtime' && data.desc.prompt.indexOf('chunk-vendors') >= 0) {
         subdir = 'chunk-vendors';
         readDir = readDir.filter(name => name.split('.')[0] === subdir);
         subdir += '.';
@@ -284,6 +284,9 @@ export default (router, services, middlewares) => {
       minute: moment().format('mm'),
       ctime: new Date(),   // 当前日期
     };
+    if (r) {
+      monitor.record = r;
+    }
     const taskName = 'handleMonitor';// + Math.ceil(randomNum(0, 10) / 3);
     // 新增队列任务 生存时间60秒
     const job = queue.create(taskName, { monitor }).ttl(60000)

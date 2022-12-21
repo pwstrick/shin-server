@@ -106,3 +106,15 @@ CREATE TABLE `web_performance_statis` (
   `project` varchar(20) COLLATE utf8mb4_bin NOT NULL COMMENT '项目关键字，关联 web_performance_project 表中的key',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='性能监控统计';
+
+DROP TABLE IF EXISTS `web_monitor_record`;
+CREATE TABLE `web_monitor_record` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `monitor_id` BIGINT NOT NULL COMMENT '监控日志的ID',
+  `record` MEDIUMTEXT NOT NULL COMMENT '回放信息，包括各类元素和DOM操作记录',
+  `ctime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `monitor_id_UNIQUE` (`monitor_id` ASC))
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_bin
+COMMENT = '直播监控回放';
