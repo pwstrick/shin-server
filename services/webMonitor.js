@@ -2,7 +2,7 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2021-02-25 15:32:43
- * @LastEditTime: 2022-12-21 17:36:14
+ * @LastEditTime: 2023-01-09 15:43:43
  * @Description: 前端监控
  * @FilePath: /strick/shin-server/services/webMonitor.js
  */
@@ -325,7 +325,7 @@ class WebMonitor {
    * 获取一条性能数据
    */
   async getPerformanceFlow({
-    id, type, range, curPage, pageSize, start, end,
+    id, type, range, identity, curPage, pageSize, start, end, path
   }) {
     const where = {};
     const types = {
@@ -352,6 +352,7 @@ class WebMonitor {
         $gt: 4000,
       },
     };
+    if(identity) where.identity = identity;
     if (id) where.id = id;
     if (type && range) {
       where[types[type]] = ranges[range];
@@ -362,6 +363,7 @@ class WebMonitor {
         $lte: end,
       };
     }
+    if(path) where.referer_path = path;
     return this.models.WebPerformance.findAndCountAll({
       where,
       raw: true,

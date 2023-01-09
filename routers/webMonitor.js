@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-25 15:40:31
- * @LastEditTime: 2022-11-25 15:28:11
+ * @LastEditTime: 2023-01-09 15:43:29
  * @LastEditors: strick
  * @Description:
  * @FilePath: /strick/shin-server/routers/webMonitor.js
@@ -791,13 +791,15 @@ router.get(
         id,
         type,
         range,
+        identity,
         curPage = 1,
         pageSize = 10,
         start,
         end,
+        path
       } = ctx.query;
       const { count, rows } = await services.webMonitor.getPerformanceFlow({
-        id, type, range, curPage, pageSize, start, end,
+        id, type, range, identity, curPage, pageSize, start, end, path
       });
       ctx.body = { code: 0, data: rows, count };
     },

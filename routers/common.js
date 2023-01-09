@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2022-12-21 17:27:37
+ * @LastEditTime: 2023-01-09 15:40:52
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
@@ -221,6 +221,17 @@ export default (router, services, middlewares) => {
   });
 
   /**
+   * 提取路径中的地址
+   */
+  function extractPath(url) {
+    /**
+     * 只提取路径信息，去除协议、域名和端口
+     * 加 {2,4} 是为了解决 https://// 无法匹配的问题
+     */
+    return url ? url.split('?')[0].replace(/(\w*):?\/{2,4}([^/:]+)(:\d*)?/, '').substring(1).trim() : null;
+  }
+
+  /**
    * 监控信息搜集
    */
    router.post('/ma.gif', async (ctx) => {
@@ -265,8 +276,6 @@ export default (router, services, middlewares) => {
     // UA信息解析
     // const ua = JSON.stringify(uaParser(ctx.headers['user-agent']));
     const ua = ctx.headers['user-agent'];
-    // 只提取路径信息，去除协议、域名和端口
-    const urlPath = url ? url.split("?")[0].replace(/(\w*):?\/{2,4}([^/:]+)(:\d*)?/, "").substring(1).trim() : null;
     const monitor = {
       project: token,
       project_subdir: projectSubdir,
@@ -278,7 +287,7 @@ export default (router, services, middlewares) => {
       identity,
       message_type: type && type.toLowerCase(),
       message_status: status,
-      message_path: urlPath,
+      message_path: extractPath(url), // 提取路径
       day: moment().format('YYYYMMDD'),
       hour: moment().format('HH'),
       minute: moment().format('mm'),
@@ -338,6 +347,7 @@ export default (router, services, middlewares) => {
       hour: moment().format('HH'),
       minute: moment().format('mm'),
       referer: params.referer, // 来源地址
+      referer_path: extractPath(params.referer), // 来源地址路径
       timing: params.timing ? JSON.stringify(params.timing) : null,
       resource: params.resource ? JSON.stringify(params.resource) : null,
     };

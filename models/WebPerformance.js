@@ -68,6 +68,10 @@ module.exports = ({ mysql }) =>
         type: Sequelize.STRING,
         field: 'referer',
       },
+      referer_path: {
+        type: Sequelize.STRING,
+        field: 'referer_path',
+      },
       timing: {
         type: Sequelize.TEXT,
         field: 'timing',
