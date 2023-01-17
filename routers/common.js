@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2023-01-09 15:40:52
+ * @LastEditTime: 2023-01-17 13:08:44
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
@@ -250,7 +250,7 @@ export default (router, services, middlewares) => {
     }
     const message = JSON.stringify(data);
     // MD5加密
-    const key = crypto.createHash('md5').update(token + category + message).digest('hex');
+    const key = crypto.createHash('md5').update(identity + token + category + message).digest('hex');
     // 读取当前最新的 Source Map 文件
     let source = '';
     const dir = `${process.env.NODE_ENV}-${token}`;   // 存放 map 文件的目录
