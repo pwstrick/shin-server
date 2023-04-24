@@ -1,9 +1,14 @@
+/*
+ * @Author: strick
+ * @LastEditors: strick
+ * @Date: 2021-02-02 16:18:02
+ * @LastEditTime: 2023-04-24 18:09:48
+ * @Description: MongoDB配置
+ * @FilePath: /strick/shin-server/db/mongodb.js
+ */
 import mongoose from 'mongoose';
 import config from 'config';
-// import bunyan from 'bunyan';
-import Promise from 'bluebird';
 
-// const logger = bunyan.createLogger({ name: 'Mongodb', level: 'debug' });
 mongoose.set('debug', (...args) => {
   if (args[0] !== 'agendaJobs') {
     logger.debug(...args);

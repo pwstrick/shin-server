@@ -2,22 +2,20 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2020-12-16 19:17:57
- * @LastEditTime: 2021-02-03 14:03:35
+ * @LastEditTime: 2023-04-24 18:01:29
  * @Description: 后台工具服务
  * @FilePath: /strick/shin-server/services/tool.js
  */
 import redis from '../db/redis';
 const shortChainKey = 'cache:aws:shortChain';
+import models from '../models';
 
 class Tool {
-  constructor(models) {
-    this.models = models;
-  }
   /**
    * MongoDB查询
    */
   async mongoQuery({ name, options, cursor }) {
-    let result = this.models[name].find(options);
+    let result = models[name].find(options);
     for (let key in cursor) {
       if (cursor[key] !== undefined) {
         result[key](cursor[key]);
@@ -32,13 +30,13 @@ class Tool {
    * 创建通用配置
    */
   async createConfig({ title, content, key }) {
-    return this.models.AppGlobalConfig.create({ title, content, key });
+    return models.AppGlobalConfig.create({ title, content, key });
   }
   /**
    * 编辑通用配置
    */
   async editConfig({ title, content, id }) {
-    return this.models.AppGlobalConfig.update(
+    return models.AppGlobalConfig.update(
       { title, content },
       {
         where: {
@@ -51,7 +49,7 @@ class Tool {
    * 删除通用配置
    */
   async delConfig({ id }) {
-    return this.models.AppGlobalConfig.update(
+    return models.AppGlobalConfig.update(
       { status: 0 },
       {
         where: {
@@ -64,7 +62,7 @@ class Tool {
    * 通用配置列表
    */
   async getConfigList() {
-    return this.models.AppGlobalConfig.findAndCountAll({
+    return models.AppGlobalConfig.findAndCountAll({
       where: {
         status: 1
       }
@@ -74,7 +72,7 @@ class Tool {
    * 读取一条通用配置
    */
   async getOneConfig(where) {
-    return this.models.AppGlobalConfig.findOne({
+    return models.AppGlobalConfig.findOne({
       where,
       raw: true
     });
@@ -83,7 +81,7 @@ class Tool {
    * 读取通用配置解析后的内容
    */
   async getConfigContent(where) {
-    const result = await this.models.AppGlobalConfig.findOne({
+    const result = await models.AppGlobalConfig.findOne({
       where,
       raw: true
     });
@@ -97,7 +95,7 @@ class Tool {
    * 添加短链
    */
   async createShortChain(data) {
-    const result = this.models.WebShortChain.create(data);
+    const result = models.WebShortChain.create(data);
     if(result) {
       this.redisShortChainSet(data.short, data.url);
     }
@@ -108,7 +106,7 @@ class Tool {
    */
   async updateShortChain(data) {
     //更新的返回值是一个数组，包含受影响的函数
-    const [affected] = await this.models.WebShortChain.update({
+    const [affected] = await models.WebShortChain.update({
       url: data.url
     }, {
       where: {
@@ -124,7 +122,7 @@ class Tool {
    * 查询短链的一条记录
    */
   async getOneShortChain(where) {
-    return this.models.WebShortChain.findOne({
+    return models.WebShortChain.findOne({
       where,
       raw: true   //格式化返回值，只包含表的字段
     });
@@ -146,7 +144,7 @@ class Tool {
         $like: `%${url}%`,
       };
     }
-    return this.models.WebShortChain.findAndCountAll({
+    return models.WebShortChain.findAndCountAll({
       where,
       limit: 20,
       offset: (curPage - 1) * 20,
@@ -159,7 +157,7 @@ class Tool {
    * 因为 key 是唯一的，不允许重复
    */
   async delShortChain({ id, short }) {
-    const [affected] = await this.models.WebShortChain.update({
+    const [affected] = await models.WebShortChain.update({
       status: 0
     }, {
       where: {

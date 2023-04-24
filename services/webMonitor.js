@@ -2,19 +2,16 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2021-02-25 15:32:43
- * @LastEditTime: 2023-01-09 15:43:43
+ * @LastEditTime: 2023-04-24 18:01:39
  * @Description: 前端监控
  * @FilePath: /strick/shin-server/services/webMonitor.js
  */
 import config from "config";
-import moment from "moment";
+import models from '../models';
 import redis from '../db/redis';
 import xfetch from '../utils/xfetch';
 const tokenRedis = 'tenant:access:token';
 class WebMonitor {
-  constructor(models) {
-    this.models = models;
-  }
   /**
    * 初始化数据
    */
@@ -67,7 +64,7 @@ class WebMonitor {
     project, start, end, identity, other={}, match, messageType, messageStatus, messagePath }) {
     const where = this.initMonitorWhere({ id, category, msg, 
       project, start, end, identity, other, match, messageType, messageStatus, messagePath });
-    return this.models.WebMonitor.findAndCountAll({
+    return models.WebMonitor.findAndCountAll({
       where,
       order: [['id', 'DESC']],
       raw: true,
@@ -87,7 +84,7 @@ class WebMonitor {
       message_status: messageStatus
     }
     const field = "message_path";
-    return this.models.WebMonitor.count({
+    return models.WebMonitor.count({
       where,
       group: [ field ],
       attributes: [ field ]
@@ -108,7 +105,7 @@ class WebMonitor {
       where.hour = hour;
     }
     const field = attribute;
-    return this.models.WebMonitor.count({
+    return models.WebMonitor.count({
       where,
       group: [ attribute ],
       attributes: [ attribute ],
@@ -127,7 +124,7 @@ class WebMonitor {
         $lte: to,
       }
     };
-    return this.models.WebMonitor.findAll({
+    return models.WebMonitor.findAll({
       where,
       raw: true,
     });
@@ -141,7 +138,7 @@ class WebMonitor {
         $lte: deadline ,
       }
     };
-    return this.models.WebMonitor.destroy({
+    return models.WebMonitor.destroy({
       where,
     });
   }
@@ -173,7 +170,7 @@ class WebMonitor {
       $gte: from,
       $lt: to,
     };
-    const count = await this.models.WebMonitor.count({
+    const count = await models.WebMonitor.count({
       where,
     });
     return count ? count : 0;
@@ -194,7 +191,7 @@ class WebMonitor {
     if(category) {
       where.category = category;
     }
-    const sum = await this.models.WebMonitor.sum(field, {
+    const sum = await models.WebMonitor.sum(field, {
       where
     });
     return sum ? sum : 0;
@@ -203,13 +200,13 @@ class WebMonitor {
   * 添加一条统计记录
   */
   async createStatis(data) {
-    return this.models.WebMonitorStatis.create(data);
+    return models.WebMonitorStatis.create(data);
   }
   /**
   * 读取一条统计记录
   */
   async getOneStatis(where) {
-    return this.models.WebMonitorStatis.findOne({
+    return models.WebMonitorStatis.findOne({
       where,
       raw: true
     });
@@ -227,7 +224,7 @@ class WebMonitor {
         $lte: end,
       };
     }
-    return this.models.WebMonitorStatis.findAll({
+    return models.WebMonitorStatis.findAll({
       where,
       raw: true,
     });
@@ -236,13 +233,13 @@ class WebMonitor {
    * 创建性能监控项目
    */
   async createPerformanceProject(data) {
-    return this.models.WebPerformanceProject.create(data);
+    return models.WebPerformanceProject.create(data);
   }
   /**
    * 获取一条性能监控项目
    */
   async getOnePerformanceProject(where) {
-    return this.models.WebPerformanceProject.findOne({
+    return models.WebPerformanceProject.findOne({
       where,
       raw: true
     });
@@ -259,7 +256,7 @@ class WebMonitor {
         $like: `%${name}%`
       }
     }
-    return this.models.WebPerformanceProject.findAndCountAll({
+    return models.WebPerformanceProject.findAndCountAll({
       where,
       raw: true,
       order: 'ctime DESC',
@@ -271,7 +268,7 @@ class WebMonitor {
    * 更新性能监控项目
    */
   async updatePerformanceProject(id, data) {
-    return this.models.WebPerformanceProject.update(
+    return models.WebPerformanceProject.update(
       data,
       {
         where: { id },
@@ -282,7 +279,7 @@ class WebMonitor {
    * 删除性能监控项目
    */
   async delPerformanceProject({ id }) {
-    return this.models.WebPerformanceProject.update(
+    return models.WebPerformanceProject.update(
       { status: 0 },
       {
         where: { id }
@@ -305,7 +302,7 @@ class WebMonitor {
     if(hour !== undefined) {
       where.hour = hour;
     }
-    const count = await this.models.WebPerformance.count({
+    const count = await models.WebPerformance.count({
       attributes,
       where,
       group
@@ -316,7 +313,7 @@ class WebMonitor {
    * 获取一条性能数据
    */
   async getOnePerformance(where) {
-    return this.models.WebPerformance.findOne({
+    return models.WebPerformance.findOne({
       where,
       raw: true,
     });
@@ -364,7 +361,7 @@ class WebMonitor {
       };
     }
     if(path) where.referer_path = path;
-    return this.models.WebPerformance.findAndCountAll({
+    return models.WebPerformance.findAndCountAll({
       where,
       raw: true,
       order: 'ctime DESC',
@@ -376,7 +373,7 @@ class WebMonitor {
    * 获取一条排序处在95%位置的性能数据
    */
   async getOneOrderPerformance(where, order, offset) {
-    return this.models.WebPerformance.findOne({
+    return models.WebPerformance.findOne({
       where,
       order,
       offset,
@@ -390,7 +387,7 @@ class WebMonitor {
     const where = {
       id: ids
     };
-    return this.models.WebPerformance.findAll({
+    return models.WebPerformance.findAll({
       where,
       raw: true
     });
@@ -399,13 +396,13 @@ class WebMonitor {
    * 创建性能统计项目
    */
   async createPerformanceStatis(data) {
-    return this.models.WebPerformanceStatis.create(data);
+    return models.WebPerformanceStatis.create(data);
   }
   /**
   * 读取一条性能统计记录
   */
   async getOnePerformanceStatis(where) {
-    return this.models.WebPerformanceStatis.findOne({
+    return models.WebPerformanceStatis.findOne({
       where,
       raw: true
     });
@@ -419,7 +416,7 @@ class WebMonitor {
         $lte: deadline ,
       }
     };
-    return this.models.WebPerformance.destroy({
+    return models.WebPerformance.destroy({
       where,
     });
   }
@@ -432,7 +429,7 @@ class WebMonitor {
         $lte: deadline ,
       }
     };
-    return this.models.WebPerformanceStatis.destroy({
+    return models.WebPerformanceStatis.destroy({
       where,
     });
   }
@@ -489,7 +486,7 @@ class WebMonitor {
    * 创建性能日志
    */
   async createPerformance(data) {
-    return this.models.WebPerformance.create(data);
+    return models.WebPerformance.create(data);
   }
 
   /**
@@ -504,7 +501,7 @@ class WebMonitor {
     row = row.toJSON();
     // 添加行为记录
     if (monitor.record) {
-      await this.models.WebMonitorRecord.create({ monitor_id: row.id, record: monitor.record });
+      await models.WebMonitorRecord.create({ monitor_id: row.id, record: monitor.record });
     }
     return row;
   }
@@ -513,7 +510,7 @@ class WebMonitor {
    * 根据 Key 来搜索日志
    */
   async getMonitorByKey({ project, category, key, identity }) {
-    return this.models.WebMonitor.findOne({
+    return models.WebMonitor.findOne({
       raw: true,
       where: {
         project, 
@@ -528,14 +525,14 @@ class WebMonitor {
    * 创建监控日志
    */
   async createMonitor(data) {
-    return this.models.WebMonitor.create(data);
+    return models.WebMonitor.create(data);
   }
 
   /**
    * 更新监控日志的出现次数
    */
   async updateMonitorDigit(digit, id) {
-    return this.models.WebMonitor.update({
+    return models.WebMonitor.update({
         digit
       }, {
       where: { id }

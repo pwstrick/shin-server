@@ -1,12 +1,14 @@
 /*
  * @Author: strick
  * @Date: 2021-01-04 15:08:42
- * @LastEditTime: 2021-02-05 13:43:10
+ * @LastEditTime: 2023-04-24 17:46:53
  * @LastEditors: strick
  * @Description: 模板组件示例
  * @FilePath: /strick/shin-server/routers/template.js
  */
-export default (router, services, middlewares) => {
+// import services from '../services/';
+// import middlewares from '../middlewares';
+export default (router) => {
   /**
    * 创建
    */

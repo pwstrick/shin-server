@@ -2,20 +2,17 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2021-07-21 15:47:03
- * @LastEditTime: 2021-07-21 15:49:21
+ * @LastEditTime: 2023-04-24 18:01:08
  * @Description: 通用数据处理
  * @FilePath: /strick/shin-server/services/common.js
  */
+import models from '../models';
 class Common {
-  constructor(models) {
-    this.models = models;
-  }
-
   /**
    * 数据库查询一条记录
    */
   async getOne(tableName, where = {}) {
-    return this.models[tableName].findOne({
+    return models[tableName].findOne({
       where,
       raw: true
     });
@@ -32,7 +29,7 @@ class Common {
     limit = 20,
     order = [["id", "DESC"]]
   }) {
-    return this.models[tableName].findAndCountAll({
+    return models[tableName].findAndCountAll({
       where,
       limit,
       offset: (curPage - 1) * limit,
@@ -46,10 +43,10 @@ class Common {
    */
   async aggregation({ tableName, where = {}, func = "count", field }) {
     if (func === "count")
-      return this.models[tableName][func]({
+      return models[tableName][func]({
         where
       });
-    return this.models[tableName][func](field, {
+    return models[tableName][func](field, {
       where
     });
   }
@@ -58,14 +55,14 @@ class Common {
    * 新增
    */
   async create(tableName, data) {
-    return this.models[tableName].create(data);
+    return models[tableName].create(data);
   }
 
   /**
    * 修改
    */
   async update(tableName, set, where) {
-    return this.models[tableName].update(set, { where });
+    return models[tableName].update(set, { where });
   }
 }
 export default Common;

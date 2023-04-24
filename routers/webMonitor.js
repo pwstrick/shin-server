@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-25 15:40:31
- * @LastEditTime: 2023-01-09 15:43:29
+ * @LastEditTime: 2023-04-24 17:47:37
  * @LastEditors: strick
  * @Description:
  * @FilePath: /strick/shin-server/routers/webMonitor.js
@@ -15,7 +15,10 @@ const fs = require("fs");
 import { PERFORMANCT_RATE } from "../utils/constant";
 import { formatDate } from '../utils/tools';
 import uaParser from "ua-parser-js";
-export default (router, services, middlewares) => {
+import services from '../services/';
+import middlewares from '../middlewares';
+
+export default (router) => {
   /**
    * 读取指定的Source-Map文件
    */

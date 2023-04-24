@@ -1,18 +1,16 @@
 import redis from '../db/redis';
 const KEY_LOGIN_COUNT = 'backend:login:count';
+import models from '../models';
 
 /**
  * 管理后台用户账号
  */
 class BackendUserAccount {
-  constructor(models) {
-    this.BackendUserAccount = models.BackendUserAccount;
-  }
   /**
    * 注册
    */
   async register(...data) {
-    const entity = new this.BackendUserAccount(data[0]);
+    const entity = new models.BackendUserAccount(data[0]);
     const res = await entity.save();
     return res;
   }
@@ -22,7 +20,7 @@ class BackendUserAccount {
    */
   async getInfoById(id) {
     try {
-      const res = await this.BackendUserAccount.findOne({ _id: id });
+      const res = await models.BackendUserAccount.findOne({ _id: id });
       return res;
     } catch (err) {
       logger.error(err.message);
@@ -34,7 +32,7 @@ class BackendUserAccount {
    * 通过用户名查询账号信息
    */
   async getInfoByUserName(userName) {
-    const res = await this.BackendUserAccount.findOne({ userName });
+    const res = await models.BackendUserAccount.findOne({ userName });
     return res;
   }
 
@@ -42,7 +40,7 @@ class BackendUserAccount {
    * 更新账号信息
    */
   async updateInfo(id, data) {
-    const res = await this.BackendUserAccount.update({
+    const res = await models.BackendUserAccount.update({
       _id: id,
     }, {
       $set: data,
@@ -75,13 +73,13 @@ class BackendUserAccount {
         $in: [roleId],
       };
     }
-    const list = await this.BackendUserAccount.find(
+    const list = await models.BackendUserAccount.find(
       whereCondition
     , {
       password: 0,
       salt: 0,
     }).skip((curPage - 1) * limit).limit(limit).sort({ createTime: 'desc' });
-    const count = await this.BackendUserAccount
+    const count = await models.BackendUserAccount
     .find(whereCondition, {
         password: 0,
         salt: 0,
@@ -94,7 +92,7 @@ class BackendUserAccount {
    * 查询指定用户详情
    */
   async getDetail(userId) {
-    const res = await this.BackendUserAccount.findOne({
+    const res = await models.BackendUserAccount.findOne({
       _id: userId,
     })
     return res;
@@ -104,7 +102,7 @@ class BackendUserAccount {
    * 检查邮箱是否已被注册
    */
   async checkEmailExist(email) {
-    const res = await this.BackendUserAccount.findOne({
+    const res = await models.BackendUserAccount.findOne({
       userName: email,
     });
     return res;
@@ -114,7 +112,7 @@ class BackendUserAccount {
    * 检查手机号是否已注册
    */
   async checkCelphoneExist(cellphone) {
-    const res = await this.BackendUserAccount.findOne({
+    const res = await models.BackendUserAccount.findOne({
       cellphone,
     });
     return res;
@@ -124,7 +122,7 @@ class BackendUserAccount {
    * 更新用户状态
    */
   async updateStatus(_id, status) {
-    const res = await this.BackendUserAccount.update({
+    const res = await models.BackendUserAccount.update({
       _id,
     }, {
       $set: {
@@ -139,7 +137,7 @@ class BackendUserAccount {
    * 删除用户
    */
   async delete(_id) {
-    const res = await this.BackendUserAccount.remove({
+    const res = await models.BackendUserAccount.remove({
       _id,
     });
     return res;
@@ -149,7 +147,7 @@ class BackendUserAccount {
    * 查询所有账号
    */
   async find() {
-    const res = await this.BackendUserAccount.find();
+    const res = await models.BackendUserAccount.find();
     return res;
   }
 
@@ -189,7 +187,7 @@ class BackendUserAccount {
    * 根据真实姓名查询账户
    */
   async getAccountOfName(realName) {
-    return this.BackendUserAccount.findOne({
+    return models.BackendUserAccount.findOne({
       realName,
     });
   }
@@ -198,7 +196,7 @@ class BackendUserAccount {
    * 查询指定角色id的账号
    */
   async getListOfRole(id) {
-    return this.BackendUserAccount.find({
+    return models.BackendUserAccount.find({
       roles: id.toString(),
     });
   }

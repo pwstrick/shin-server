@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2023-01-17 13:08:44
+ * @LastEditTime: 2023-04-24 17:46:33
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
@@ -14,7 +14,10 @@ import crypto from 'crypto';
 import moment from 'moment';
 import queue from '../utils/queue';
 import { MONITOR_PROJECT } from '../utils/constant';
-export default (router, services, middlewares) => {
+import services from '../services/';
+
+
+export default (router) => {
   /**
    * 上传逻辑
    */

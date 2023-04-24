@@ -1,15 +1,18 @@
 /*
  * @Author: strick
  * @Date: 2020-12-22 14:54:23
- * @LastEditTime: 2021-02-03 14:02:19
+ * @LastEditTime: 2023-04-24 17:47:12
  * @Description: 业务工具接口
  * @FilePath: /strick/shin-server/routers/tool.js
  */
 import crypto from "crypto";
 import { string10to62 } from "../utils";
+import services from '../services/';
+import middlewares from '../middlewares';
+
 const murmurhash = require('../utils/murmurhash');
 
-export default (router, services, middlewares) => {
+export default (router) => {
   /**
    * 创建和编辑通用配置
    */

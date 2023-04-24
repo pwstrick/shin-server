@@ -9,6 +9,8 @@ import moment from 'moment';
 import config from 'config';
 import { randomString } from '../utils';
 import redis from '../db/redis';
+import services from '../services/';
+import middlewares from '../middlewares';
 
 //5分钟内登录次数超过此值账号将被禁用
 const loginCountLimit = 3;
@@ -24,7 +26,7 @@ const cryptoPassword = (userName, password, salt) => {
   return crypto.createHash('md5').update(str).digest('hex');
 };
 
-export default (router, services, middlewares) => {
+export default (router) => {
     // 查询当前用户信息
   router.get(
     '/user',

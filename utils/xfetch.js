@@ -2,8 +2,8 @@
  * @Author: strick
  * @LastEditors: strick
  * @Date: 2020-09-28 11:15:47
- * @LastEditTime: 2021-09-06 12:25:36
- * @Description: 
+ * @LastEditTime: 2023-04-24 18:13:21
+ * @Description: 通信
  * @FilePath: /strick/shin-server/utils/xfetch.js
  */
 import axios from 'axios';
