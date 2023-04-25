@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-02 16:13:00
- * @LastEditTime: 2022-12-21 17:40:52
+ * @LastEditTime: 2023-04-25 17:28:33
  * @LastEditors: strick
  * @Description: 启动文件
  * @FilePath: /strick/shin-server/app.js
@@ -15,7 +15,8 @@ import KoaStatic from 'koa-static';
 import koaBunyanLogger from 'koa-bunyan-logger';
 import jwt from 'koa-jwt';
 import config from 'config';
-import bunyan from 'bunyan';
+import pino from 'pino';
+import koaPinoLogger from 'koa-pino-logger';
 import routers from './routers/';
 import errorHandle from './middlewares/errorHandle';
 import init from './init';
@@ -23,19 +24,72 @@ import init from './init';
 const app = new Koa();
 const router = new KoaRouter();
 
-global.logger2 = bunyan.createLogger({
+/**
+ * 基于 OpenTracing 标准的分布式追踪系统，有助于分析服务架构中的计时数据
+ * https://github.com/openzipkin/zipkin-js
+ */
+// import { Tracer, ConsoleRecorder, ExplicitContext } from 'zipkin';
+// import { koaMiddleware } from 'zipkin-instrumentation-koa';
+// const ctxImpl = new ExplicitContext();
+// const recorder = new ConsoleRecorder();
+// const tracer = new Tracer({recorder, ctxImpl, localServiceName: 'zipkin-koa-shin'});
+// app.use(koaMiddleware({tracer}));
+
+
+/**
+ * 全链路日志追踪
+ * https://github.com/puzpuzpuz/cls-rtracer
+ */
+const rTracer = require('cls-rtracer');
+
+global.logger = pino({
   name: 'shin-server',
   level: 'trace',
+  mixin () {
+    return { 'req-id': rTracer.id() }
+  },
+  hooks: {
+    // 格式化日志
+    logMethod (inputArgs, method) {
+      const printfs = [];
+      for(let i=0; i<inputArgs.length; i++) {
+        switch(typeof inputArgs) {
+          case 'object':
+            printfs.push('%o');
+            break;
+          case 'number':
+            printfs.push('%d');
+            break;
+          default:
+            printfs.push('%s');
+        }
+      }
+      return method.apply(this, [printfs.join(' '), ...inputArgs])
+    }
+  }
 });
-global.logger = {
-  debug: () => {},
-  warn: () => {},
-  error: () => {},
-  info: () => {},
-  trace: () => {},
-};
-app.use(koaBunyanLogger());
-app.use(koaBunyanLogger.requestIdContext());
+
+// 基于 Async Hooks 的全链路追踪
+app.use(rTracer.koaMiddleware());
+
+/**
+ * pino 的 KOA 中间件
+ * https://github.com/pinojs/koa-pino-logger
+ * 配置信息参考 pino-http
+ * https://github.com/pinojs/pino-http
+ */
+app.use(koaPinoLogger({
+  autoLogging: false,   // 省略request completed
+  serializers: {
+    req: req => req.id,
+    res: () => undefined,
+  },
+  customAttributeKeys: {
+    req: 'req-id',
+  },
+  genReqId: () => rTracer.id(),   // 声明 req-id 的值
+}));
+
 app.use(KoaCompress());
 app.use(KoaBodyParser({ jsonLimit: '10mb', textLimit: '10mb', enableTypes: ['json', 'form', 'text'] }));
 app.use(KoaStatic('static'));
@@ -53,6 +107,7 @@ app.use(koaBunyanLogger.requestLogger({
     fields.operator = this.state.user && this.state.user.realName;
   },
 }));
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 
