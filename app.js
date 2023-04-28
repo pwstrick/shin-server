@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-02 16:13:00
- * @LastEditTime: 2023-04-25 17:28:33
+ * @LastEditTime: 2023-04-27 18:05:24
  * @LastEditors: strick
  * @Description: 启动文件
  * @FilePath: /strick/shin-server/app.js
@@ -97,7 +97,7 @@ app.use(KoaStatic('upload'));
 app.use(jwt({
   secret: config.get('jwtSecret'),    //401 Unauthorized
 }).unless({
-  path: [/user\/login/, /user\/init/, /\/download/, /common\/upload/, /pe\.gif/, /ma\.gif/, /smap\/del/],  //跳过登录态的请求
+  path: [/user\/login/, /user\/init/, /\/download/, /common\/upload/, /pe\.gif/, /ma\.gif/, /smap\/del/, /callback/],  //跳过登录态的请求
 }));
 app.use(errorHandle());
 app.use(koaBunyanLogger.requestLogger({
