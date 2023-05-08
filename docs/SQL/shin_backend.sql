@@ -45,6 +45,7 @@ CREATE TABLE `web_monitor` (
   `message_status` int(11) DEFAULT NULL COMMENT 'message中的通信状态码',
   `message_path` varchar(45) COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'message通信中的 path',
   `message_type` varchar(20) COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'message中的类别字段',
+  `referer` varchar(200) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '来源地址',
   PRIMARY KEY (`id`),
   KEY `idx_key_category_project_identity` (`key`,`category`,`project`,`identity`),
   KEY `idx_category_project_identity` (`category`,`project`,`identity`),

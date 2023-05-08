@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-03 15:15:01
- * @LastEditTime: 2023-04-24 17:46:33
+ * @LastEditTime: 2023-05-08 17:21:20
  * @LastEditors: strick
  * @Description: 通用路由
  * @FilePath: /strick/shin-server/routers/common.js
@@ -240,7 +240,7 @@ export default (router) => {
    router.post('/ma.gif', async (ctx) => {
     const { m, r } = JSON.parse(ctx.request.body);
     const params = JSON.parse(m);
-    let { subdir = '', token, category, data, identity } = params;
+    let { subdir = '', token, category, data, identity, referer } = params;
     let { type, status, url } = data;
     const projectSubdir = subdir;   // 子目录 提前缓存
     // 对 Promise 的错误做特殊处理
@@ -288,6 +288,7 @@ export default (router) => {
       ua,
       source,
       identity,
+      referer,
       message_type: type && type.toLowerCase(),
       message_status: status,
       message_path: extractPath(url), // 提取路径

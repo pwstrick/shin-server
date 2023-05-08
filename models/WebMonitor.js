@@ -1,7 +1,7 @@
 /*
  * @Author: strick
  * @Date: 2021-02-24 16:17:40
- * @LastEditTime: 2021-07-07 14:58:48
+ * @LastEditTime: 2023-05-08 17:20:55
  * @LastEditors: strick
  * @Description: 前端监控日志表
  * @FilePath: /strick/shin-server/models/WebMonitor.js
@@ -79,7 +79,11 @@ module.exports = ({ mysql }) =>
       message_type: {
         type: Sequelize.STRING,
         field: "message_type"
-      }
+      },
+      referer: {
+        type: Sequelize.STRING,
+        field: 'referer',
+      },
     },
     {
       tableName: "web_monitor",
